@@ -24,9 +24,8 @@ void	check_dosk (t_fg *e, char *line)
 		e->map[ft_atoi(line)] = ft_strsub(line, 4, e->wm);
 }
 
-void	check_map(t_fg *e, char *line, char *let)
+void	check_map(t_fg *e, char *line, char *let, int i)
 {
-	static int i;
 
 	if (ft_strstr(line, "omakovsk.filler") && ft_strstr(line, "p1"))
 		*let = 'O';
@@ -40,7 +39,7 @@ void	check_map(t_fg *e, char *line, char *let)
 		e->pc = (char**)malloc(sizeof(char*) * (e->hf + 1));
 	}
 	if (line[0] == '.' || line[0] == '*')
-		e->pc[i++] = ft_strsub(line, 0, e->wf);
+		e->pc[i++] = ft_strsub(line, 0, e->wf);	
 }	
 
 void	count_sz_fg(t_fg *e)
@@ -220,6 +219,7 @@ void	free_map(t_fg *e)
 	i = 0;
 	while (e->map[i])
 	{	
+		ft_bzero(e->map[i], e->wm);
 		free(e->map[i]);
 		e->map[i++] = NULL;
 	}
@@ -233,7 +233,8 @@ void	free_pc(t_fg *e)
 
 	i = 0;
 	while (e->pc[i])
-	{	
+	{
+		ft_bzero(e->pc[i], e->wf);
 		free(e->pc[i]);
 		e->pc[i++] = NULL;
 	}
@@ -249,6 +250,7 @@ void	free_struct(t_fg *e)
 	free(e->x);
 	free(e->p);
 	free(e->f);
+	e->hf = 0;
 }
 
 void	check_touch(t_fg *e, char let, int y, int x)
@@ -263,9 +265,11 @@ void	check_touch(t_fg *e, char let, int y, int x)
 	{
 		j = 0;
 		while (j < e->wf)
-		{	
+		{
 			if ((e->pc[i][j] == '*') && (e->map[y + i][x + j] == let))
+			{	
 				tch++;
+			}	
 			j++;
 		}	
 		i++;
@@ -291,9 +295,15 @@ void	algoritm(t_fg *e, char let)
 			// if y-coord in token bigger zen y-coord in my figure - break, becouse then it's
 			// not my figure
 			if (e->f[0] > e->o[(e->szo)*2 - 2] && let == 'O')
+			{
+				ft_putstr("oj1");	
 				break ;
+			}	
 			if (e->f[0] > e->x[(e->szx)*2 - 2] && let == 'X')
+			{
+				ft_putstr("oj2");	
 				break ;
+			}	
 			check_touch(e, let, i, j);
 			j++;
 		}
@@ -306,28 +316,40 @@ int		main (void)
 	char	*line;
 	t_fg	e;
 	static char	let = 'O';
-	int i = 999;
+	int i;
 	e.hf = 0;
 	e.rezy = 0;
 	e.rezx = 0;
-	while (i)
-	{	
-		ft_get_next_line(0, &line);
-		check_map(&e, line, &let);
-		if (e.hf && i == 999)
-			i = e.hf + 1;
-		if (e.hf)
-			i--;
+	while (ft_get_next_line(0, &line) > 0)	
+	{
+		i = 0;
+		check_map(&e, line, &let, i);
 		free(line);
 		line = NULL;
+		if (e.hf)
+		{
+			while (i < e.hf)
+			{
+				ft_get_next_line(0, &line);
+				check_map(&e, line, &let, i);
+				free(line);
+				i++;
+				line = NULL;
+			}
+			e.map[e.hm] = NULL;
+			e.pc[e.hf] = NULL;
+			wrt_coord(&e);
+			algoritm(&e, let);
+			ft_putnbr_fd(e.rezy, 1);
+			ft_putstr_fd(" ", 1);
+			ft_putnbr_fd(e.rezx, 1);
+			ft_putstr_fd("\n", 1);
+		//	printf ("%d %d\n", 0, 0);
+			free_struct(&e);
+		}
 	}
-	e.map[e.hm] = NULL;
-	e.pc[e.hf] = NULL;
-	wrt_coord(&e);
-	algoritm(&e, let);
-	printf ("%d %d\n", e.rezy, e.rezx);
-	free_struct(&e);
 	//free(&e);
+
 //	}
 //	printf ("wm == %d\n", e.wm);
 //	printf ("hm == %d\n", e.hm);
