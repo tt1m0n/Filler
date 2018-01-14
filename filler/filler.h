@@ -34,6 +34,8 @@ typedef struct s_fg
 	int			*f;
 	int			rezy;
 	int			rezx;
+	int			diffx;
+	int			diffy;
 }				t_fg;
 
 void	wrt_coord(t_fg *e);

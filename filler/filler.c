@@ -263,39 +263,37 @@ int		abs(int n)
 		return (n);
 }
 
-void	check_distance(t_fg *e, char let, int y, int x)
+void	check_distance_up(t_fg *e, char let, int y, int x)
 {
 	// for up
 	int n;
 	int k;
-	int diffx = 0;
-	int diffy = 0;
 	static int change;
 	/*
 	***search coordinates of last sharp in my figure (not in piece)
 	*/
-	diffx = e->p[e->szp * 2 - 1] - e->f[e->szf * 2 - 1];
-	diffy = e->p[e->szp * 2 - 2] - e->f[e->szf * 2 - 2];
+	e->diffx = e->p[e->szp * 2 - 1] - e->f[e->szf * 2 - 1];
+	e->diffy = e->p[e->szp * 2 - 2] - e->f[e->szf * 2 - 2];
 	if (change == 2)
 	{
-		n = abs(e->wm - 1 - (x + e->wf - 1 - diffx)) + abs(0 - (y + e->hf - 1 - diffy));
-		k = abs(e->wm - 1 - (e->rezx + e->wf - 1 - diffx)) + abs(0 - (e->rezy + e->hf - 1 - diffy));
+		n = abs(e->wm - 1 - (x + e->wf - 1 - e->diffx)) + abs(e->hm - 1 - (y + e->hf - 1 - e->diffy));
+		k = abs(e->wm - 1 - (e->rezx + e->wf - 1 - e->diffx)) + abs(e->hm - 1 - (e->rezy + e->hf - 1 - e->diffy));
 	}
 	/*
 	***top - bottom
 	*/
 	if (change == 1)
 	{
-		n = abs(e->wm / 2 - (x + e->wf - 1 - diffx)) + abs(e->hm - (y + e->hf - 1 - diffy));
-		k = abs(e->wm / 2 - (e->rezx + e->wf - 1 - diffx)) + abs(e->hm - (e->rezy + e->hf - 1 - diffy));
+		n = abs(e->wm / 2 - (x + e->wf - 1 - e->diffx)) + abs(e->hm - (y + e->hf - 1 - e->diffy));
+		k = abs(e->wm / 2 - (e->rezx + e->wf - 1 - e->diffx)) + abs(e->hm - (e->rezy + e->hf - 1 - e->diffy));
 	}
 	/*
 	***top - center
 	*/
-	else
+	if (change == 0)
 	{	
-		n = abs(e->wm / 2 + 2- (x + e->wf - 1 - diffx)) + abs(0 - (y + e->hf - 1 - diffy));
-		k = abs(e->wm / 2 + 2- (e->rezx + e->wf - 1 - diffx)) + abs(0 - (e->rezy + e->hf - 1 - diffy));
+		n = abs(e->wm / 2 + 2 - (x + e->wf - 1 - e->diffx)) + abs(0 - (y + e->hf - 1 - e->diffy));
+		k = abs(e->wm / 2 + 2 - (e->rezx + e->wf - 1 - e->diffx)) + abs(0 - (e->rezy + e->hf - 1 - e->diffy));
 	}	
 	if ((n < k && let) || (e->rezx == 0 && e->rezy == 0))
 	{
@@ -304,9 +302,53 @@ void	check_distance(t_fg *e, char let, int y, int x)
 	}
 	if (e->map[0][e->wm / 2 + 2] == let)
 		change = 1;
+	if (e->map[e->hm - 1][e->wm / 2] == let)	
+		change = 2;
+}
+
+void	check_distance_down(t_fg *e, char let, int y, int x)
+{
+	// for up
+	int n;
+	int k;
+	static int change;
+	/*
+	***search coordinates of last sharp in my figure (not in piece)
+	*/
+	e->diffx = e->p[e->szp * 2 - 1] - e->f[e->szf * 2 - 1];
+	e->diffy = e->p[e->szp * 2 - 2] - e->f[e->szf * 2 - 2];
+	if (change == 2)
+	{
+		n = abs(0 - (x + e->wf - 1 - e->diffx)) + abs(0 - (y + e->hf - 1 - e->diffy));
+		k = abs(0 - (e->rezx + e->wf - 1 - e->diffx)) + abs(0 - (e->rezy + e->hf - 1 - e->diffy));
+	}
+	/*
+	***top - center
+	*/
+	if (change == 1)
+	{
+		n = abs(e->wm / 2 - (x + e->wf - 1 - e->diffx)) + abs(-1 - (y + e->hf - 1 - e->diffy));
+		k = abs(e->wm / 2 - (e->rezx + e->wf - 1 - e->diffx)) + abs(-1 - (e->rezy + e->hf - 1 - e->diffy));
+	}
+	/*
+	***top - center
+	*/
+	else
+	{	
+		n = abs(e->wm / 2 - 2 - (x + e->wf - 1 - e->diffx)) + abs(e->hm - 1 - (y + e->hf - 1 - e->diffy));
+		k = abs(e->wm / 2 - 2 - (e->rezx + e->wf - 1 - e->diffx)) + abs(e->hm - 1 - (e->rezy + e->hf - 1 - e->diffy));
+	}	
+	if ((n < k && let) || (e->rezx == 0 && e->rezy == 0))
+	{
+		e->rezx = x;
+		e->rezy = y;
+	}
+	if (e->map[e->hm - 1][e->wm / 2 - 2] == let)
+		change = 1;
 	if (e->map[e->hm - 1][e->wm - 1] == let)
 		change = 2;
 }
+
 
 void	check_touch(t_fg *e, char let, int y, int x)
 {
@@ -333,11 +375,13 @@ void	check_touch(t_fg *e, char let, int y, int x)
 		}
 		i++;
 	}
-	if (tch == 1 && i == e->hf && j == e->wf)
-		check_distance(e, let, y, x);
+	if (tch == 1 && i == e->hf && j == e->wf && e->flag == 1)
+		check_distance_up(e, let, y, x);
+	if (tch == 1 && i == e->hf && j == e->wf && e->flag == 2)
+		check_distance_down(e, let, y, x);
 }
 
-void	algoritmup(t_fg *e, char let)
+void	algoritm(t_fg *e, char let)
 {
 	int i;
 	int j;
@@ -361,6 +405,8 @@ void	init_struct(t_fg *e)
 	e->rezy = 0;
 	e->rezx = 0;
 	e->flag = 0;
+	e->diffx = 0;
+	e->diffy = 0;
 }
 
 void	set_flag(t_fg *e, char let)
@@ -390,17 +436,15 @@ void	read_piece(t_fg *e, char let, int i)
 	wrt_coord(e);
 	if (e->flag == 0)
 		set_flag(e, let);
-	if (e->flag == 1)
-		algoritmup(e, let);
-	if (e->flag == 2)
-		algoritmdown(e, let);
+	algoritm(e, let);
+//	if (e->flag == 2)
+//		algoritmdown(e, let);
 	ft_putnbr_fd(e->rezy, 1);
 	ft_putstr_fd(" ", 1);
 	ft_putnbr_fd(e->rezx, 1);
 	ft_putstr_fd("\n", 1);
 	free_struct(e);
 }
-
 
 int		main (void)
 {
