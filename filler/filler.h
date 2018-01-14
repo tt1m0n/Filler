@@ -19,6 +19,7 @@ typedef struct s_fg
 {
 	char		**map;
 	char		**pc;
+	int			flag;
 	int			wm;
 	int			hm;
 	int			wf;

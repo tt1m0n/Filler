@@ -171,7 +171,7 @@ void	wrt_cor_f(t_fg *e)
 			{	
 				e->f[k] = i;
 				e->f[k + 1] = j;
-				k++;
+				k = k + 2;
 			}	
 			j++;
 		}
@@ -194,7 +194,7 @@ void	wrt_cor_p(t_fg *e)
 		{
 			e->p[k] = i;
 			e->p[k + 1] = j;
-			k++;
+			k = k + 2;
 			j++;
 		}
 		i++;
@@ -251,6 +251,61 @@ void	free_struct(t_fg *e)
 	free(e->p);
 	free(e->f);
 	e->hf = 0;
+	e->rezy = 0;
+	e->rezx = 0;
+}
+
+int		abs(int n)
+{
+	if (n < 0)
+		return (-n);
+	else
+		return (n);
+}
+
+void	check_distance(t_fg *e, char let, int y, int x)
+{
+	// for up
+	int n;
+	int k;
+	int diffx = 0;
+	int diffy = 0;
+	static int change;
+	/*
+	***search coordinates of last sharp in my figure (not in piece)
+	*/
+	diffx = e->p[e->szp * 2 - 1] - e->f[e->szf * 2 - 1];
+	diffy = e->p[e->szp * 2 - 2] - e->f[e->szf * 2 - 2];
+	if (change == 2)
+	{
+		n = abs(e->wm - 1 - (x + e->wf - 1 - diffx)) + abs(0 - (y + e->hf - 1 - diffy));
+		k = abs(e->wm - 1 - (e->rezx + e->wf - 1 - diffx)) + abs(0 - (e->rezy + e->hf - 1 - diffy));
+	}
+	/*
+	***top - bottom
+	*/
+	if (change == 1)
+	{
+		n = abs(e->wm / 2 - (x + e->wf - 1 - diffx)) + abs(e->hm - (y + e->hf - 1 - diffy));
+		k = abs(e->wm / 2 - (e->rezx + e->wf - 1 - diffx)) + abs(e->hm - (e->rezy + e->hf - 1 - diffy));
+	}
+	/*
+	***top - center
+	*/
+	else
+	{	
+		n = abs(e->wm / 2 + 2- (x + e->wf - 1 - diffx)) + abs(0 - (y + e->hf - 1 - diffy));
+		k = abs(e->wm / 2 + 2- (e->rezx + e->wf - 1 - diffx)) + abs(0 - (e->rezy + e->hf - 1 - diffy));
+	}	
+	if ((n < k && let) || (e->rezx == 0 && e->rezy == 0))
+	{
+		e->rezx = x;
+		e->rezy = y;
+	}
+	if (e->map[0][e->wm / 2 + 2] == let)
+		change = 1;
+	if (e->map[e->hm - 1][e->wm - 1] == let)
+		change = 2;
 }
 
 void	check_touch(t_fg *e, char let, int y, int x)
@@ -266,22 +321,23 @@ void	check_touch(t_fg *e, char let, int y, int x)
 		j = 0;
 		while (j < e->wf)
 		{
+			if ((e->pc[i][j] == '*') && (e->map[y + i][x + j] != let) &&\
+				(e->map[y + i][x + j] != '.'))
+			{
+				i = e->hf;
+				break ;
+			}
 			if ((e->pc[i][j] == '*') && (e->map[y + i][x + j] == let))
-			{	
-				tch++;
-			}	
+				tch++;	
 			j++;
-		}	
+		}
 		i++;
 	}
-	if (tch == 1)
-	{	
-		e->rezy = y;
-		e->rezx = x;
-	}
+	if (tch == 1 && i == e->hf && j == e->wf)
+		check_distance(e, let, y, x);
 }
 
-void	algoritm(t_fg *e, char let)
+void	algoritmup(t_fg *e, char let)
 {
 	int i;
 	int j;
@@ -292,18 +348,6 @@ void	algoritm(t_fg *e, char let)
 		j = 0;
 		while (j <= (e->wm - e->wf))
 		{
-			// if y-coord in token bigger zen y-coord in my figure - break, becouse then it's
-			// not my figure
-			if (e->f[0] > e->o[(e->szo)*2 - 2] && let == 'O')
-			{
-				ft_putstr("oj1");	
-				break ;
-			}	
-			if (e->f[0] > e->x[(e->szx)*2 - 2] && let == 'X')
-			{
-				ft_putstr("oj2");	
-				break ;
-			}	
 			check_touch(e, let, i, j);
 			j++;
 		}
@@ -311,15 +355,61 @@ void	algoritm(t_fg *e, char let)
 	}	
 }
 
+void	init_struct(t_fg *e)
+{
+	e->hf = 0;
+	e->rezy = 0;
+	e->rezx = 0;
+	e->flag = 0;
+}
+
+void	set_flag(t_fg *e, char let)
+{
+	if ((let == 'O') && (e->o[0] <= e->x[0]))
+		e->flag = 1;
+	else if ((let == 'X') && (e->x[0] <= e->o[0]))
+		e->flag = 1;
+	else
+		e->flag = 2;
+}
+
+void	read_piece(t_fg *e, char let, int i)
+{
+	char *line;
+
+	while (i < e->hf)
+	{
+		ft_get_next_line(0, &line);
+		check_map(e, line, &let, i);
+		free(line);
+		line = NULL;
+		i++;
+	}
+	e->map[e->hm] = NULL;
+	e->pc[e->hf] = NULL;
+	wrt_coord(e);
+	if (e->flag == 0)
+		set_flag(e, let);
+	if (e->flag == 1)
+		algoritmup(e, let);
+	if (e->flag == 2)
+		algoritmdown(e, let);
+	ft_putnbr_fd(e->rezy, 1);
+	ft_putstr_fd(" ", 1);
+	ft_putnbr_fd(e->rezx, 1);
+	ft_putstr_fd("\n", 1);
+	free_struct(e);
+}
+
+
 int		main (void)
 {
 	char	*line;
 	t_fg	e;
-	static char	let = 'O';
-	int i;
-	e.hf = 0;
-	e.rezy = 0;
-	e.rezx = 0;
+	int 	i;
+	static char	let;
+
+	init_struct(&e);
 	while (ft_get_next_line(0, &line) > 0)	
 	{
 		i = 0;
@@ -327,37 +417,7 @@ int		main (void)
 		free(line);
 		line = NULL;
 		if (e.hf)
-		{
-			while (i < e.hf)
-			{
-				ft_get_next_line(0, &line);
-				check_map(&e, line, &let, i);
-				free(line);
-				i++;
-				line = NULL;
-			}
-			e.map[e.hm] = NULL;
-			e.pc[e.hf] = NULL;
-			wrt_coord(&e);
-			algoritm(&e, let);
-			ft_putnbr_fd(e.rezy, 1);
-			ft_putstr_fd(" ", 1);
-			ft_putnbr_fd(e.rezx, 1);
-			ft_putstr_fd("\n", 1);
-		//	printf ("%d %d\n", 0, 0);
-			free_struct(&e);
-		}
+			read_piece(&e, let, i);
 	}
-	//free(&e);
-
-//	}
-//	printf ("wm == %d\n", e.wm);
-//	printf ("hm == %d\n", e.hm);
-//	printf ("wf == %d\n", e.wf);
-//	printf ("hf == %d\n", e.hf);
-//	printf ("sizeo == %d\n", e.szo);
-//	printf ("rezx == %d\n", e.rezx);
-//	printf ("rezy == %d\n", e.rezy);
-//	system ("leaks omakovsk.filler");
 	return (0);
 }
