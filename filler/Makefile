@@ -12,7 +12,8 @@
 
 FLAGS = -Wall -Werror -Wextra -c
 
-SRC = filler.c
+SRC = filler.c check_map.c wrt_coord.c mem_for_fg.c free.c alghoritm.c\
+	  alg_down.c alg_up.c
 
 OBJ	= $(SRC:.c=.o)
 

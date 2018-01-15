@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
+#ifndef FILLER_H
+# define FILLER_H
 
-#include "../libft/libft.h"
-#include <fcntl.h>
+# include "../libft/libft.h"
 
-typedef struct s_fg
+typedef struct	s_fg
 {
 	char		**map;
 	char		**pc;
@@ -38,4 +38,25 @@ typedef struct s_fg
 	int			diffy;
 }				t_fg;
 
-void	wrt_coord(t_fg *e);
+void			check_map(t_fg *e, char *line, char *let, int i);
+void			check_dosk (t_fg *e, char *line);
+void			wrt_coord(t_fg *e);
+void			count_sz_pc(t_fg *e);
+void			count_sz_fg(t_fg *e);
+void			mem_for_fg(t_fg *e);
+void			wrt_cor_o(t_fg *e);
+void			wrt_cor_x(t_fg *e);
+void			wrt_cor_f(t_fg *e);
+void			wrt_cor_p(t_fg *e);
+void			free_struct(t_fg *e);
+void			free_pc(t_fg *e);
+void			free_map(t_fg *e);
+void			algoritm(t_fg *e, char let);
+void			check_touch(t_fg *e, char let, int y, int x);
+void			count_diff(t_fg *e);
+void			check_distance_up(t_fg *e, char let, int y, int x);
+void			set_change_up(t_fg *e, char let, int *change);
+void			check_distance_down(t_fg *e, char let, int y, int x);
+void			set_change_down(t_fg *e, char let, int *change);
+
+#endif
