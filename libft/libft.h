@@ -6,7 +6,7 @@
 /*   By: omakovsk <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/26 17:24:50 by omakovsk          #+#    #+#             */
-/*   Updated: 2018/01/13 14:10:26 by omakovsk         ###   ########.fr       */
+/*   Updated: 2018/01/16 17:02:30 by omakovsk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
-typedef struct        s_lst
+typedef struct		s_lst
 {
 	char			*str;
 	int				fd;

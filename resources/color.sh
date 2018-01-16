@@ -1,34 +1,22 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
+#    color.sh                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: omakovsk <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2018/01/12 12:20:55 by omakovsk          #+#    #+#              #
-#    Updated: 2018/01/16 17:08:48 by omakovsk         ###   ########.fr        #
+#    Created: 2018/01/16 15:43:37 by omakovsk          #+#    #+#              #
+#    Updated: 2018/01/16 15:43:39 by omakovsk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-FLAGS = -Wall -Werror -Wextra -c
+gren=$(printf "\033[32mO\033[0m")
+yel=$(printf "\033[33mX\033[0m")
+grens=$(printf "\033[34mo\033[0m")
+yel2=$(printf "\033[31mx\033[0m")
 
-SRC = filler.c check_map.c wrt_coord.c mem_for_fg.c free.c alghoritm.c\
-	  alg_down.c alg_up.c
-
-OBJ	= $(SRC:.c=.o)
-
-all: $(addprefix ../objects/,$(OBJ))
-
-../objects/%.o: %.c
-	gcc $(FLAGS) $< -o $@
-
-clean:
-	@rm -f $(OBJ)
-	@echo filler object deleted
-
-fclean: clean
-
-re: fclean all
-
-
-.PHONY: clean fclean all re
+sed "s|O|$gren|g" |
+sed "s|X|$yel|g" |
+sed "s|x|$yel2|g" |
+sed "/^0.. /s|o|$grens|g" |
+sed "s|fin|player|g" 

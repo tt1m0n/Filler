@@ -6,7 +6,7 @@
 #    By: omakovsk <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/10/26 18:09:32 by omakovsk          #+#    #+#              #
-#    Updated: 2018/01/12 12:48:02 by omakovsk         ###   ########.fr        #
+#    Updated: 2018/01/16 17:13:21 by omakovsk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,8 @@ all: $(addprefix ../objects/,$(OBJ))
 	gcc $(FLAGS) $< -o $@
 
 clean:
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
+	@echo libft object deleted
 
 fclean: clean
 
