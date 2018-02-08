@@ -1,5 +1,13 @@
 # Filler
 
+HOW IT WORKS
+
+
+1. Compile project (print make at the root). It will compile all files and create my player omakovsk.filler
+2. Go to the (resources) directory and type something like this [./filler_vm -f maps00 -p1 ../omakovsk.filler -p2 players/abanlin.filler] or you can just type ./filler_vm and program will show you the Usage
+
+--------------------------------------------------------------------------------------------------------
+
  You’ll have to submit a file called author containing your username followed by a ’\n’ at the root of your repository.
  
 • The executable file must be named <login>.filler.
@@ -55,9 +63,3 @@ pieces on the the game board.
 • The game stops at the first error: either when a game piece cannot be placed anymore or it has been wrongly placed.
 
 -------------------------------------------------------------------
-
-How it is work?
-
-1. Compile project (print make at the root). It will compile all files and create my player omakovsk.filler
-2. Go to the resources directory and type something like this [./filler_vm -f maps00 -p1 ../omakovsk.filler -p2 players/abanlin.filler] or you can just type ./filler_vm and program will show you the Usage
-
