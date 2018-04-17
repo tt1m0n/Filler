@@ -1,4 +1,4 @@
-# Filler
+# Assignment 42_school. Filler
 
 HOW IT WORKS
 
@@ -63,3 +63,9 @@ pieces on the the game board.
 • The game stops at the first error: either when a game piece cannot be placed anymore or it has been wrongly placed.
 
 -------------------------------------------------------------------
+
+![](https://github.com/tt1m0n/Filler/blob/master/resources/Filler_1.gif)
+
+![](https://github.com/tt1m0n/Filler/blob/master/resources/Filler_2.gif)
+
+![](https://github.com/tt1m0n/Filler/blob/master/resources/Filler_3.gif)
