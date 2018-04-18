@@ -67,5 +67,7 @@ pieces on the the game board.
 ![](https://github.com/tt1m0n/Filler/blob/master/resources/Filler_1.gif)
 
 
+
+
 ![](https://github.com/tt1m0n/Filler/blob/master/resources/Filler_2.gif)
 
